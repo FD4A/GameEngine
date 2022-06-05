@@ -2,7 +2,7 @@
 #define IMAGE_HPP_
 
 #include <iostream>
-#include "RenderInterface.hpp"
+#include "../Render/RenderInterface.hpp"
 
 struct Image
 {

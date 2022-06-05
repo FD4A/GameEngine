@@ -5,6 +5,11 @@ project(GameEngine)
 add_compile_options(-std=c++20)
 
 add_executable(GameEngine MAIN.cpp
-						  Image.cpp
-						  Scene.cpp
-						  GameObject.cpp)
+						  ./ResourceManager/Image.cpp
+						  ./Render/RenderOpenGL_static.cpp
+						  ./Render/RenderOpenGL.cpp
+						  ./Render/ShadersOpenGL/ShaderOpenGL.cpp
+						  ./Game/Scene.cpp
+						  ./Game/GameObject.cpp)
+						  
+target_link_libraries(GameEngine GL glfw)

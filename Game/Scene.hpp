@@ -3,8 +3,9 @@
 
 #include <iostream>
 #include <vector>
-#include "RenderInterface.hpp"
-#include "GameObject.hpp"
+#include "../Debug.h"
+#include "../Render/RenderInterface.hpp"
+#include "../Game/GameObject.hpp"
 
 template<typename Container, typename Operation>
 void for_all(Container& c, Operation op)
@@ -20,7 +21,9 @@ struct Scene
 private:
 	static RenderInterface* render;
 	std::vector<GameObject> objects;
+
 public:
+	bool finish = false;
 	Scene() = delete;
 
 	static void initRender(RenderInterface* newRender)
@@ -31,13 +34,13 @@ public:
 
 	void addObject(GameObject&& obj)
 	{
-		std::cout << "Scene::" << __FUNCTION__ << '\n';
+		DEBUG_SHORT(scene,print("Scene::",__FUNCTION__,'\n');)
 		objects.push_back(std::move(obj));
 	}
 
 	void draw()
 	{
-		std::cout << "Scene::" << __FUNCTION__ << '\n';
+		DEBUG_SHORT(scene,print("Scene::",__FUNCTION__,'\n');)
 
 		//1
 		for(auto& obj: objects)
