@@ -28,9 +28,7 @@ void RenderOpenGL::init()
 	int v_rev;
 	glfwGetVersion(&v_major,&v_minor,&v_rev);
 	DEBUG_SHORT(render, print("glfwGetVersion() major=",v_major," minor=",v_minor," rev=",v_rev,'\n'); )
-	const char *ver;
-	ver = glfwGetVersionString();
-	DEBUG_SHORT(render,print(ver,'\n');)
+	DEBUG_SHORT(render,	const char *ver; ver = glfwGetVersionString(); print(ver,'\n');)
 
 	/*4x smooth*/
 	glfwWindowHint(GLFW_SAMPLES, 4);

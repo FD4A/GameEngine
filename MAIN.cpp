@@ -7,7 +7,7 @@
 	Debug_t Debug;
 #endif
 
-int main(int argc, char **argv)
+int main()
 {
 	RenderOpenGL render;
 	Engine engine;

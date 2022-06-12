@@ -6,13 +6,13 @@
 struct GameObject
 {
 	static int gid;
-	textureID textureId=0;
-	shaderID shaderId=0;
 	int id=0;
 	int posHor=0;
 	int posVer=0;
+	textureID textureId=0;
 	int speedH = 0;
 	int speedV = 0;
+	shaderID shaderId=0;
 
 	GameObject() = delete;
 	GameObject(const GameObject& copy) = delete;
