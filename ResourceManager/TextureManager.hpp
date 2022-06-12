@@ -2,19 +2,13 @@
 #define RESOURCEMANAGER_TEXTUREMANAGER_HPP_
 
 /*
- * По имени техтуры возвращает id, если id нет, то грузит текстура
+ * По имени текстуры возвращает id, если id нет, то грузит текстуру
  * создаёт рендером и возвращает id
  */
-
 
 #include <unordered_map>
 #include <string>
 #include "../Render/RenderInterface.hpp"
-
-struct Image
-{
-
-};
 
 struct TextureManager
 {
@@ -23,7 +17,6 @@ private:
 	static RenderInterface* render;
 	textureID loadImageCreateTexture(std::string texturePathName);
 public:
-	//unsigned int -> на свой тип который определиться в зависимости от рендера
 	void init(RenderInterface* newRender);
 	textureID getTextureId(std::string& texturePathName);
 	textureID getTextureId(std::string&& texturePathName);
