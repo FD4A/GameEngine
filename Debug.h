@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-#define ENGINE_DEBUG
+#define ENGINE_DEBUG 0
 
 template <typename Head, typename... Tail>
 void print(const Head& head, const Tail&... tail)
@@ -14,17 +14,20 @@ void print(const Head& head, const Tail&... tail)
 		{print(tail...);}
 }
 
-#if defined(ENGINE_DEBUG)
+#define ELOG std::cerr
+#if ENGINE_DEBUG
 	#define DEBUG_SHORT(flag,action) if(Debug.flag){action;};
 	struct Debug_t
 	{
-		bool scene=false;
-		bool render=false;
-		bool gameobject=false;
+		bool scene = false;
+		bool render = false;
+		bool shader = false;
+		bool gameobject = false;
 	};
 	extern Debug_t Debug;
-#elif
-	#define DEBUG_SHORT {}
+
+#else
+	#define DEBUG_SHORT(flag,action) {}
 #endif
 
 #endif

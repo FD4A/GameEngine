@@ -4,14 +4,20 @@
 #include "../Debug.h"
 #include "RenderOpenGL.hpp"
 
-int RenderOpenGL::height=600;
-int RenderOpenGL::width=800;
-Scene* RenderOpenGL::scene=nullptr;
+int RenderOpenGL::height=768;
+int RenderOpenGL::width=1024;
 
 void RenderOpenGL::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 	switch(key)
 	{
+		case GLFW_KEY_N://next scene
+			if(GLFW_PRESS==action)
+			{
+//				RenderOpenGL::scene->state++;
+//				RenderOpenGL::scene->state%=3;
+			}
+			break;
 	}
 }
 
@@ -29,9 +35,3 @@ void RenderOpenGL::scroll_callback(GLFWwindow* window, double xoffset, double yo
 {}
 void RenderOpenGL::resize_callback(GLFWwindow* window, int x, int y)
 {}
-
-
-
-
-
-

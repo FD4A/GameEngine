@@ -4,7 +4,7 @@
 #include <GLFW/glfw3.h>
 #include <string>
 #include "RenderInterface.hpp"
-#include "../Game/Scene.hpp"
+#include "../Game/Game.hpp"
 #include "ShadersOpenGL/ShaderOpenGL.hpp"
 
 struct RenderOpenGL: public RenderInterface
@@ -12,7 +12,6 @@ struct RenderOpenGL: public RenderInterface
 private:
 	static int height;
 	static int width;
-	static Scene *scene;
 	GLFWwindow *window=nullptr;
 	char title[9]="GameName";
 	Shader square;
@@ -29,22 +28,25 @@ public:
 	void frameStart() override;
 	bool frameEnd() override;
 
-	void bindTexture(int&& value) override
-	{
-		DEBUG_SHORT(render,print("Render::",__FUNCTION__,'\n');)
-	}
+	textureID createTexture(std::string name) override;
+	void bindTexture(textureID& value) override;
+	void deleteTexture(textureID& value) override;
 
-	void bindTexture(int& value) override
-	{
-		DEBUG_SHORT(render,print("Render::",__FUNCTION__,'\n');)
-	}
+	void draw(GameObject& obj) override;
 
-	void unbindTexture() override
-	{
-		DEBUG_SHORT(render,print("Render::",__FUNCTION__,'\n');)
-	}
+	int getW() override;
+	int getH() override;
 
-	void draw(GameObject* obj) override;
+	~RenderOpenGL()
+	{
+		// Delete window before ending the program
+		glfwDestroyWindow(window);
+		// Terminate GLFW before ending the program
+		glfwTerminate();
+
+		glfwDestroyWindow(window);
+		glfwTerminate();
+	}
 };
 
 #endif /* RENDERA_HPP_ */

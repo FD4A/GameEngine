@@ -1,13 +1,10 @@
-#include "ShaderOpenGL.hpp"
-
 #include <string>
 #include <iostream>
 #include <fstream>
 #include <sstream>
 
-#if !defined(LOG)
-	#define LOGGER std::cout
-#endif
+#include "ShaderOpenGL.hpp"
+#include "../../Debug.h"
 
 unsigned int Shader::load_from_file_create_compile(const char* path, GLenum shaderType)
 {
@@ -19,9 +16,9 @@ unsigned int Shader::load_from_file_create_compile(const char* path, GLenum shad
 		std::stringstream strStream;
 		std::ifstream fromstream{path};
 		if( !fromstream )
-			{LOGGER << "fail open path=" << path << "\n";}
+			{ELOG << "fail open path=" << path << "\n";}
 		else
-			{LOGGER << "success open path\n";}
+			{ DEBUG_SHORT(shader,print("success open path\n");) }
 		strStream << fromstream.rdbuf();
 		fromstream.close();
 		code = strStream.str();
@@ -34,9 +31,9 @@ unsigned int Shader::load_from_file_create_compile(const char* path, GLenum shad
 		glCompileShader(shader);
 		glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
 		if(!success)
-			{LOGGER << "fail glCompileShader()\n";}
+			{ELOG << "fail glCompileShader()\n";}
 		else
-			{LOGGER << "success glCompileShader()\n";}
+			{ DEBUG_SHORT(shader,print("success glCompileShader()\n");) }
 	}
 	return shader;
 }
@@ -49,20 +46,20 @@ void Shader::init(const char *vertexPath, const char *fragmentPath)
 	unsigned int vertexShader = load_from_file_create_compile(vertexPath, GL_VERTEX_SHADER);
 	unsigned int fragmentShader = load_from_file_create_compile(fragmentPath, GL_FRAGMENT_SHADER);
 	/*link program*/
-	ID = glCreateProgram();
-	glAttachShader(ID, vertexShader);
-	glAttachShader(ID, fragmentShader);
-	glLinkProgram(ID);
+	programID = glCreateProgram();
+	glAttachShader(programID, vertexShader);
+	glAttachShader(programID, fragmentShader);
+	glLinkProgram(programID);
 	GLint status;
-	glGetProgramiv(ID, GL_LINK_STATUS, &status);
+	glGetProgramiv(programID, GL_LINK_STATUS, &status);
 	if( !status )
-		{LOGGER << "fail glLinkProgram\n";}
+		{ELOG << "fail glLinkProgram\n";}
 	else
-		{LOGGER << "success glLinkProgram\n";}
+		{ DEBUG_SHORT(shader,print("success glLinkProgram()\n");) }
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader);
 }
 
 void Shader::use()
-	{glUseProgram(ID);}
+	{glUseProgram(programID);}
 

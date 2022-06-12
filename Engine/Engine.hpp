@@ -2,36 +2,42 @@
 #define ENGINE_HPP_
 
 #include "../Render/RenderInterface.hpp"
-#include "../Game/Scene.hpp"
+#include "../ResourceManager/TextureManager.hpp"
+#include "../Game/Game.hpp"
 
 struct Engine
 {
 private:
 	RenderInterface* render;
+	TextureManager textureManager;
 public:
-	void initRender(RenderInterface* newRender)
+	void init(RenderInterface* newRender)
 	{
 		render=newRender;
-		Scene::initRender(newRender);
+		Game::initRender(newRender);
 		render->init();
+		textureManager.init(newRender);
+		createScene2();
 	}
-	Scene scene{1000};
+	Game game{1000};
+
+	void createScene1();
+	void createScene2();
+	void clearScene();
 
 	void gameLoop()
 	{
-		while(!scene.finish)
+		int sw = 0;
+		while(!game.finish)
 		{
-			//scene.update();+gameupdate
-			//scene.update();+animation update
-			//scene.playsound();
-
+			game.update();
+			//animation update?
+			//playsound?
 			render->frameStart();
-			scene.draw();
-			scene.finish = render->frameEnd();
+			game.draw();
+			game.finish = render->frameEnd();
 		}
 	}
 };
-
-
 
 #endif /* ENGINE_HPP_ */

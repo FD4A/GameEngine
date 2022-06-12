@@ -4,6 +4,16 @@
 #include "../Debug.h"
 #include "RenderOpenGL.hpp"
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
+
+#define STB_IMAGE_IMPLEMENTATION
+#include "../stb_image.h"
+
+//TODO добавить проверку ошибок gl функций
+
 void RenderOpenGL::init()
 {
 	if( GLFW_TRUE!=glfwInit() )
@@ -49,9 +59,12 @@ void RenderOpenGL::init()
 	glfwSetScrollCallback(window, RenderOpenGL::scroll_callback);
 	glfwSetCursorEnterCallback(window, RenderOpenGL::cursor_enter_callback);
 	glfwSetCursorPosCallback(window, RenderOpenGL::cursor_position_callback);
+//	glfwSetWindowCloseCallback(window, RenderOpenGL::window_close_callback);
 
 	glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+
+	this->initShaderSquare();
 }
 
 void RenderOpenGL::frameStart()
@@ -64,49 +77,54 @@ bool RenderOpenGL::frameEnd()
 {
 	glfwSwapBuffers(window);
 	glfwPollEvents();
-	if( GLFW_PRESS == glfwGetKey(window,GLFW_KEY_ESCAPE) )
-    	{return true;}
+	if( GLFW_PRESS == glfwGetKey(window,GLFW_KEY_ESCAPE) || glfwWindowShouldClose(window) )
+    {
+		return true;
+    }
 	return false;
 }
 
-void RenderOpenGL::draw(GameObject* obj)
+void RenderOpenGL::draw(GameObject& obj)
 {
-	DEBUG_SHORT(render,print("Render::",__FUNCTION__,'\n');)
+	DEBUG_SHORT(render, print("Render::",__FUNCTION__,'\n'); )
 
-	//shader ID
-//	square.use();
-//	glBindVertexArray(square.VAO); это mesh?
+//	//shader ID TODO подробнее посмотреть что такое VAO VBO EBO
+	square.use();
+	glBindVertexArray(square.VAO);
 
 	//texId
-//	glBindTexture(GL_TEXTURE_2D, o->tex);
-//	glm::mat4 modelM = glm::mat4(1.0f);
-//	modelM = glm::translate(modelM, glm::vec3(
-//			(static_cast<float>(o->posHor)-Render::width/2.0f)*(2.0f/static_cast<float>(Render::width)),
-//			(static_cast<float>(o->posVer)-Render::height/2.0f)*(2.0f/static_cast<float>(Render::height)),
-//             0.0f));
-//	glUniformMatrix4fv(square.modelLoc, 1, GL_FALSE, glm::value_ptr(modelM));
-//	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+	glBindTexture(GL_TEXTURE_2D, obj.textureId);
+	glm::mat4 modelM = glm::mat4(1.0f);
+	modelM = glm::translate(modelM, glm::vec3(
+			(static_cast<float>(obj.posHor)-RenderOpenGL::width/2.0f)*(2.0f/static_cast<float>(RenderOpenGL::width)),
+			(static_cast<float>(obj.posVer)-RenderOpenGL::height/2.0f)*(2.0f/static_cast<float>(RenderOpenGL::height)),
+             0.0f));
+	modelM = glm::scale(modelM, glm::vec3(3.5f,3.5f,3.5f) );
+	glUniformMatrix4fv(square.modelLoc, 1, GL_FALSE, glm::value_ptr(modelM));
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }
 
 void RenderOpenGL::initShaderSquare()
 {
-	square.init("./ShadersOpenGL/source/pole2.vs","./ShadersOpenGL/source/pole2.fs");
+	square.init("./Render/ShadersOpenGL/source/pole2.vs","./Render/ShadersOpenGL/source/pole2.fs");
 	float vPOS = 0.1f;
 	float dp = 1.0f;
-	float scale = 600.0f/800.0f;//перенести в другое место чтобы была возможность масштабирования экрана?
+	//перенести в другое место чтобы была возможность масштабирования экрана? + у каждого объекта должен быть scale
+	float scale = static_cast<float>(RenderOpenGL::height)/static_cast<float>(RenderOpenGL::width);
+	float scaleY = 936.0f/672.0f;
 	float vertices[]={
 	//передняя грань куба =)
-	scale*-vPOS, -vPOS, 0.0f,
+	scale*-vPOS, scaleY*-vPOS, 0.0f,
 		 dp, 1.0f,
-	scale*vPOS, -vPOS,  0.0f,
+	scale*vPOS, scaleY*-vPOS,  0.0f,
 		 0.0f, 1.0f,
-	scale*vPOS,  vPOS,  0.0f,
+	scale*vPOS, scaleY*vPOS,  0.0f,
 		 0.0f, 0.0f,
-	scale*vPOS,  vPOS,  0.0f,
+	scale*vPOS, scaleY*vPOS,  0.0f,
 		 0.0f, 0.0f,
-	scale*-vPOS,  vPOS, 0.0f,
+	scale*-vPOS, scaleY*vPOS, 0.0f,
 		 dp, 0.0f,
-	scale*-vPOS, -vPOS, 0.0f,
+	scale*-vPOS, scaleY*-vPOS, 0.0f,
 		 dp, 1.0f
 	};
 
@@ -128,6 +146,52 @@ void RenderOpenGL::initShaderSquare()
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-	square.modelLoc = glGetUniformLocation(square.ID,"transform");
+	square.modelLoc = glGetUniformLocation(square.programID,"transform");
+}
+
+textureID RenderOpenGL::createTexture(std::string name)
+{
+	DEBUG_SHORT(render,print("Render::",__FUNCTION__,'\n');)
+	textureID id;
+	int hor=0, ver=0, ch=0;
+	unsigned char *buffer=nullptr;
+	//stbi_set_flip_vertically_on_load(true);
+	buffer = stbi_load(name.c_str(), &hor, &ver, &ch, 0);//динамическое выделение?
+	glGenTextures(1, &id);
+	glBindTexture(GL_TEXTURE_2D, id);
+	if (nullptr!=buffer)
+	{
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, hor, ver, 0, GL_RGB, GL_UNSIGNED_BYTE, buffer);
+		glGenerateMipmap(GL_TEXTURE_2D);/*пока всё плоское*/
+	}
+	else
+	{
+		std::cerr << "Failed to load texture" << std::endl;
+	}
+	stbi_image_free(buffer);
+
+	return id;
+}
+
+void RenderOpenGL::bindTexture(textureID& value)
+{
+	DEBUG_SHORT(render,print("Render::",__FUNCTION__,'\n');)
+	glBindTexture(GL_TEXTURE_2D, value);
+}
+
+void RenderOpenGL::deleteTexture(textureID& value)
+{
+	DEBUG_SHORT(render,print("Render::",__FUNCTION__,'\n');)
+	glDeleteTextures(1, &value);
+}
+
+int RenderOpenGL::getW()
+{
+	return RenderOpenGL::width;
+}
+
+int RenderOpenGL::getH()
+{
+	return RenderOpenGL::height;
 }
 
