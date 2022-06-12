@@ -39,11 +39,6 @@ public:
 
 	~RenderOpenGL()
 	{
-		// Delete window before ending the program
-		glfwDestroyWindow(window);
-		// Terminate GLFW before ending the program
-		glfwTerminate();
-
 		glfwDestroyWindow(window);
 		glfwTerminate();
 	}
