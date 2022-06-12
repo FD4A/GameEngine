@@ -27,7 +27,6 @@ public:
 
 	void gameLoop()
 	{
-		int sw = 0;
 		while(!game.finish)
 		{
 			game.update();
