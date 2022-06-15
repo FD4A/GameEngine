@@ -7,7 +7,7 @@
 
 struct RenderInterface
 {
-	virtual void init()=0;
+	virtual void init(void* game)=0;
 	virtual void frameStart()=0;
 	virtual bool frameEnd()=0;
 

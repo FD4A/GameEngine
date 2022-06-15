@@ -13,6 +13,7 @@ add_executable(GameEngine MAIN.cpp
 						  ./Game/Game.cpp
 						  ./Game/GameControl.cpp
 						  ./Game/GameObject.cpp
-						  ./ResourceManager/TextureManager.cpp)
+						  ./ResourceManager/TextureManager.cpp
+						  ./Audio/AudioManagerFMOD.cpp)
 						  
-target_link_libraries(GameEngine GL glfw)
+target_link_libraries(GameEngine GL glfw fmod)

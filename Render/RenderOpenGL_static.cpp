@@ -6,6 +6,7 @@
 
 int RenderOpenGL::height=768;
 int RenderOpenGL::width=1024;
+Game* RenderOpenGL::game=nullptr;
 
 void RenderOpenGL::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
@@ -23,7 +24,11 @@ void RenderOpenGL::key_callback(GLFWwindow* window, int key, int scancode, int a
 
 void RenderOpenGL::mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 {
-	DEBUG_SHORT(render,print("button=",button," action=",action," mods=",mods);)
+	DEBUG_SHORT(render_mouse_button_callback,print("button=",button," action=",action," mods=",mods,"\n");)
+	if(0==button && 1==action)
+	{
+		RenderOpenGL::game->setClick();
+	}
 }
 void RenderOpenGL::cursor_position_callback(GLFWwindow* window, double xpos, double ypos)
 {

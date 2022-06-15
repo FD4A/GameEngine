@@ -12,6 +12,7 @@ struct Game
 private:
 	static RenderInterface* render;
 	std::vector<GameObject> objects;
+	bool click = false;
 public:
 	int state=0;/*TODO сделать enum? menu-?loading?-lvl*/
 	bool finish = false;
@@ -25,6 +26,15 @@ public:
 	void draw();
 	void clear();
 
+	void eraseClick()
+	{
+		click=false;
+	}
+	void setClick()
+	{
+		click=true;
+	}
+	bool isClick(){return click;}//вынести в отдельный класс?
 	/**/
 };
 

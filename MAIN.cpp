@@ -2,6 +2,7 @@
 
 #include "Engine/Engine.hpp"
 #include "Render/RenderOpenGL.hpp"
+#include "Audio/AudioManagerFMOD.hpp"
 
 #if ENGINE_DEBUG
 	Debug_t Debug;
@@ -9,10 +10,21 @@
 
 int main()
 {
-	RenderOpenGL render;
-	Engine engine;
+	#ifdef RENDER_OPENGL
+		RenderOpenGL render;
+	#else
+	#endif
 
-	engine.init(dynamic_cast<RenderInterface*>(&render));
+	#ifdef AUDIO_FMOD
+		AudioManagerFMOD audio;
+	#else
+	#endif
+
+	Engine engine;
+	engine.init(dynamic_cast<RenderInterface*>(&render),
+				dynamic_cast<AudioManagerInterface*>(&audio)
+				);
+
 	engine.gameLoop();
 
 	return 0;

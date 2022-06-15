@@ -1,7 +1,7 @@
 #ifndef RENDER_RENDERTYPES_HPP_
 #define RENDER_RENDERTYPES_HPP_
 
-#define RENDER_OPENGL
+#include "../Config.h"
 
 #if defined(RENDER_OPENGL)
 	#include <GLES3/gl32.h>

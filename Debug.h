@@ -2,8 +2,8 @@
 #define DEBUG_EEENGINE_H_
 
 #include <iostream>
+#include "Config.h"
 
-#define ENGINE_DEBUG 0
 
 template <typename Head, typename... Tail>
 void print(const Head& head, const Tail&... tail)
@@ -12,6 +12,8 @@ void print(const Head& head, const Tail&... tail)
 	std::cout << head;
 	if constexpr ( sizeof...(tail)>0 )
 		{print(tail...);}
+	else
+		{std::cout << '\n';}
 }
 
 #define ELOG std::cerr
@@ -21,7 +23,10 @@ void print(const Head& head, const Tail&... tail)
 	{
 		bool scene = false;
 		bool render = false;
+			bool render_line_mode = false;
+			bool render_mouse_button_callback = true;
 		bool shader = false;
+		bool audio = true;
 		bool gameobject = false;
 	};
 	extern Debug_t Debug;

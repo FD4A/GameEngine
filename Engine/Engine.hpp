@@ -2,21 +2,28 @@
 #define ENGINE_HPP_
 
 #include "../Render/RenderInterface.hpp"
-#include "../ResourceManager/TextureManager.hpp"
+	#include "../ResourceManager/TextureManager.hpp"
+#include "../Audio/AudioManagerInterface.hpp"
+
 #include "../Game/Game.hpp"
 
 struct Engine
 {
 private:
 	RenderInterface* render;
-	TextureManager textureManager;
+		TextureManager textureManager;
+	AudioManagerInterface* audio;
 public:
-	void init(RenderInterface* newRender)
+	void init(RenderInterface* newRender, AudioManagerInterface* newAudio)
 	{
 		render=newRender;
 		Game::initRender(newRender);
-		render->init();
+		render->init((void*)&game);
 		textureManager.init(newRender);
+
+		audio = newAudio;
+		audio->init((void*)&game);
+
 		createScene2();
 	}
 	Game game{1000};
@@ -29,12 +36,15 @@ public:
 	{
 		while(!game.finish)
 		{
-			game.update();
-			//animation update?
-			//playsound?
 			render->frameStart();
 			game.draw();
 			game.finish = render->frameEnd();
+
+			game.update();
+
+			audio->update();//playsound?
+
+			game.eraseClick();
 		}
 	}
 };

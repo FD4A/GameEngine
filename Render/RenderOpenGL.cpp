@@ -1,21 +1,23 @@
 #include <GLFW/glfw3.h>
 #include <GLES3/gl32.h>
 #include <iostream>
-#include "../Debug.h"
-#include "RenderOpenGL.hpp"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "../Debug.h"
+#include "RenderOpenGL.hpp"
+#include "../Game/Game.hpp"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "../stb_image.h"
 
 //TODO добавить проверку ошибок gl функций
 
-void RenderOpenGL::init()
+void RenderOpenGL::init(void* Game_)
 {
+	RenderOpenGL::game = static_cast<Game*>(Game_);
 	if( GLFW_TRUE!=glfwInit() )
 	{
 		std::cerr << "fail glfwInit " << glfwGetError(nullptr) << '\n';
@@ -40,15 +42,14 @@ void RenderOpenGL::init()
 	glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);/*ban resize*/
 
 	/* open window and create opengl context */
-	window = glfwCreateWindow( RenderOpenGL::width, RenderOpenGL::height, title, NULL, NULL);
+	window = glfwCreateWindow( RenderOpenGL::width, RenderOpenGL::height,  title, NULL, NULL);
 	if(NULL==window)
 	{
 		std::cerr << "fail glfwCreateWindow()\n";
 		glfwTerminate();
 		std::exit(EXIT_FAILURE);
 	}
-
-	glViewport(0, 0, width, height);/*0,0 lower left corner here*/
+	glViewport(0, 0, RenderOpenGL::width, RenderOpenGL::height);/*0,0 lower left corner here*/
 
 	/*context opengl*/
 	glfwMakeContextCurrent(window);
@@ -57,10 +58,11 @@ void RenderOpenGL::init()
 	glfwSetScrollCallback(window, RenderOpenGL::scroll_callback);
 	glfwSetCursorEnterCallback(window, RenderOpenGL::cursor_enter_callback);
 	glfwSetCursorPosCallback(window, RenderOpenGL::cursor_position_callback);
-//	glfwSetWindowCloseCallback(window, RenderOpenGL::window_close_callback);
 
 	glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+
+	DEBUG_SHORT(render_line_mode,glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);)
 
 	this->initShaderSquare();
 }
@@ -85,7 +87,6 @@ bool RenderOpenGL::frameEnd()
 void RenderOpenGL::draw(GameObject& obj)
 {
 	DEBUG_SHORT(render, print("Render::",__FUNCTION__,'\n'); )
-
 //	//shader ID TODO подробнее посмотреть что такое VAO VBO EBO
 	square.use();
 	glBindVertexArray(square.VAO);
@@ -97,7 +98,8 @@ void RenderOpenGL::draw(GameObject& obj)
 			(static_cast<float>(obj.posHor)-RenderOpenGL::width/2.0f)*(2.0f/static_cast<float>(RenderOpenGL::width)),
 			(static_cast<float>(obj.posVer)-RenderOpenGL::height/2.0f)*(2.0f/static_cast<float>(RenderOpenGL::height)),
              0.0f));
-	modelM = glm::scale(modelM, glm::vec3(3.5f,3.5f,3.5f) );
+	float scaleObj=0.5f;
+	modelM = glm::scale(modelM, glm::vec3(scaleObj,scaleObj,scaleObj) );
 	glUniformMatrix4fv(square.modelLoc, 1, GL_FALSE, glm::value_ptr(modelM));
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }
@@ -105,25 +107,23 @@ void RenderOpenGL::draw(GameObject& obj)
 void RenderOpenGL::initShaderSquare()
 {
 	square.init("./Render/ShadersOpenGL/source/pole2.vs","./Render/ShadersOpenGL/source/pole2.fs");
-	float vPOS = 0.1f;
-	float dp = 1.0f;
 	//перенести в другое место чтобы была возможность масштабирования экрана? + у каждого объекта должен быть scale
 	float scale = static_cast<float>(RenderOpenGL::height)/static_cast<float>(RenderOpenGL::width);
 	float scaleY = 936.0f/672.0f;
 	float vertices[]={
 	//передняя грань куба =)
-	scale*-vPOS, scaleY*-vPOS, 0.0f,
-		 dp, 1.0f,
-	scale*vPOS, scaleY*-vPOS,  0.0f,
+	scale*-1.0f, scaleY*-1.0f, 0.0f,//A
+		 0.0f, 0.0f,
+	scale*1.0f, scaleY*-1.0f,  0.0f,//B
+		 1.0f, 0.0f,
+	scale*1.0f, scaleY*1.0f,   0.0f,//D
+		 1.0f, 1.0f,
+	scale*1.0f, scaleY*1.0f,   0.0f,//D
+		 1.0f, 1.0f,
+	scale*-1.0f, scaleY*1.0f,  0.0f,//C
 		 0.0f, 1.0f,
-	scale*vPOS, scaleY*vPOS,  0.0f,
-		 0.0f, 0.0f,
-	scale*vPOS, scaleY*vPOS,  0.0f,
-		 0.0f, 0.0f,
-	scale*-vPOS, scaleY*vPOS, 0.0f,
-		 dp, 0.0f,
-	scale*-vPOS, scaleY*-vPOS, 0.0f,
-		 dp, 1.0f
+	scale*-1.0f, scaleY*-1.0f, 0.0f,//A
+		 0.0f, 0.0f
 	};
 
 	unsigned int indices[6];
@@ -153,7 +153,7 @@ textureID RenderOpenGL::createTexture(std::string name)
 	textureID id;
 	int hor=0, ver=0, ch=0;
 	unsigned char *buffer=nullptr;
-	//stbi_set_flip_vertically_on_load(true);
+	stbi_set_flip_vertically_on_load(true);
 	buffer = stbi_load(name.c_str(), &hor, &ver, &ch, 0);//динамическое выделение?
 	glGenTextures(1, &id);
 	glBindTexture(GL_TEXTURE_2D, id);
