@@ -3,6 +3,7 @@
 Наброски для GameEngine
 
 ***Компоненты:***
+
 GLFW - работа с окном (https://www.glfw.org/)
 
 OpenGL - графический рендер (туториал тут https://learnopengl.com/)
