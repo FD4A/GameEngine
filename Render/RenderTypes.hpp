@@ -5,8 +5,8 @@
 
 #if defined(RENDER_OPENGL)
 	#include <GLES3/gl32.h>
-	typedef GLuint textureID;
-	typedef unsigned int shaderID;
+	using textureID = GLuint;
+	using shaderID = unsigned int;
 #endif
 
 #endif
