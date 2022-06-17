@@ -24,9 +24,10 @@ void print(const Head& head, const Tail&... tail)
 		bool scene = false;
 		bool render = false;
 			bool render_line_mode = false;
-			bool render_mouse_button_callback = true;
+			bool render_mouse_button_callback = false;
+			bool cursor_position_callback = false;
 		bool shader = false;
-		bool audio = true;
+		bool audio = false;
 		bool gameobject = false;
 	};
 	extern Debug_t Debug;

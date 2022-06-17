@@ -18,18 +18,19 @@ public:
 	{
 		render=newRender;
 		Game::initRender(newRender);
-		render->init((void*)&game);
+		render->init(&game);
 		textureManager.init(newRender);
 
 		audio = newAudio;
-		audio->init((void*)&game);
+		audio->init(&game);
 
-		createScene2();
+		createScene3();
 	}
 	Game game{1000};
 
 	void createScene1();
 	void createScene2();
+	void createScene3();
 	void clearScene();
 
 	void gameLoop()

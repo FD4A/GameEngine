@@ -3,6 +3,7 @@
 
 #include <GLFW/glfw3.h>
 #include <string>
+#include "../Game/GameInterface.hpp"
 #include "RenderInterface.hpp"
 #include "../Game/Game.hpp"
 #include "ShadersOpenGL/ShaderOpenGL.hpp"
@@ -16,7 +17,9 @@ private:
 	char title[9]="GameName";
 	Shader square;
 	void initShaderSquare();
-	static Game* game;
+	static GameInterface* game;
+	static double xpos;
+	static double ypos;
 public:
 	static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 	static void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
@@ -25,7 +28,7 @@ public:
 	static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 	static void resize_callback(GLFWwindow* window, int x, int y);
 
-	void init(void* game) override;
+	void init(GameInterface* game) override;
 	void frameStart() override;
 	bool frameEnd() override;
 

@@ -2,12 +2,13 @@
 #define RENDERINTERFACE_HPP_
 
 #include <string>
+#include "../Game/GameInterface.hpp"
 #include "RenderTypes.hpp"
 #include "../Game/GameObject.hpp"
 
 struct RenderInterface
 {
-	virtual void init(void* game)=0;
+	virtual void init(GameInterface* game)=0;
 	virtual void frameStart()=0;
 	virtual bool frameEnd()=0;
 

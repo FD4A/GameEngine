@@ -18,7 +18,7 @@ typedef struct
 
 struct AudioManagerFMOD: public AudioManagerInterface
 {
-	static Game* game;
+	static GameInterface* game;
 	FMOD::System *asystem=nullptr;
 	std::array<sound_t,1> sounds;
 
@@ -28,12 +28,16 @@ struct AudioManagerFMOD: public AudioManagerInterface
 //		FMOD::Channel *channelR=nullptr;
 		FMOD::Channel *channelAlwaysNearListener=nullptr;
 
-	void init(void* game) override;
+	void init(GameInterface* game) override;
 	void update() override;
 	void createSound(std::string name) override;
 //	void playSound(soundID id) override;
 
 	AudioManagerFMOD();
+	~AudioManagerFMOD()
+	{
+		asystem->release();
+	}
 };
 
 #endif /* AUDIO_AUDIOMANAGERFMOD_HPP_ */

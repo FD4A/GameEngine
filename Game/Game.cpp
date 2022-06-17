@@ -17,8 +17,6 @@ void Game::addObject(GameObject&& obj)
 void Game::update()
 {
 	DEBUG_SHORT(scene,print("Scene::",__FUNCTION__,'\n');)
-//	if(click)
-//		{click = false;}
 	for(GameObject& obj: objects)
 	{
 		obj.update(0, render->getW(), render->getH(), 0);

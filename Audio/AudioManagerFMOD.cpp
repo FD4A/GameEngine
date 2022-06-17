@@ -2,16 +2,16 @@
 #include "AudioManagerFMOD.hpp"
 #include "../Game/Game.hpp"
 
-Game* AudioManagerFMOD::game=nullptr;
+GameInterface* AudioManagerFMOD::game=nullptr;
 
 AudioManagerFMOD::AudioManagerFMOD()
 {
 
 }
 
-void AudioManagerFMOD::init(void* Game_)
+void AudioManagerFMOD::init(GameInterface* Game_)
 {
-	AudioManagerFMOD::game = static_cast<Game*>(Game_);
+	AudioManagerFMOD::game =Game_;
 	FMOD_RESULT res;
 	FMOD::Debug_Initialize(FMOD_DEBUG_LEVEL_ERROR |
 						   FMOD_DEBUG_LEVEL_WARNING |
@@ -80,7 +80,7 @@ void AudioManagerFMOD::update()
 	if( game->isClick() )
 	{
 		FMOD_RESULT res = asystem->playSound(sounds[0].sound, nullptr, false, &channelAlwaysNearListener);
-		printf("%s\n",FMOD_ErrorString(res));
+		DEBUG_SHORT(audio,printf("%s\n",FMOD_ErrorString(res)));
 		FMOD_VECTOR v;
 		v.x = 0.5;
 		v.y = 0.5;

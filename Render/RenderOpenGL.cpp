@@ -15,9 +15,9 @@
 
 //TODO добавить проверку ошибок gl функций
 
-void RenderOpenGL::init(void* Game_)
+void RenderOpenGL::init(GameInterface* Game_)
 {
-	RenderOpenGL::game = static_cast<Game*>(Game_);
+	RenderOpenGL::game = Game_;
 	if( GLFW_TRUE!=glfwInit() )
 	{
 		std::cerr << "fail glfwInit " << glfwGetError(nullptr) << '\n';
@@ -98,8 +98,9 @@ void RenderOpenGL::draw(GameObject& obj)
 			(static_cast<float>(obj.posHor)-RenderOpenGL::width/2.0f)*(2.0f/static_cast<float>(RenderOpenGL::width)),
 			(static_cast<float>(obj.posVer)-RenderOpenGL::height/2.0f)*(2.0f/static_cast<float>(RenderOpenGL::height)),
              0.0f));
-	float scaleObj=0.5f;
-	modelM = glm::scale(modelM, glm::vec3(scaleObj,scaleObj,scaleObj) );
+	float scaleObj=obj.scale;
+	float resolutionScale = static_cast<float>(RenderOpenGL::height)/static_cast<float>(RenderOpenGL::width);
+	modelM = glm::scale(modelM, glm::vec3(resolutionScale*scaleObj,scaleObj,scaleObj) );
 	glUniformMatrix4fv(square.modelLoc, 1, GL_FALSE, glm::value_ptr(modelM));
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }
@@ -108,21 +109,20 @@ void RenderOpenGL::initShaderSquare()
 {
 	square.init("./Render/ShadersOpenGL/source/pole2.vs","./Render/ShadersOpenGL/source/pole2.fs");
 	//перенести в другое место чтобы была возможность масштабирования экрана? + у каждого объекта должен быть scale
-	float scale = static_cast<float>(RenderOpenGL::height)/static_cast<float>(RenderOpenGL::width);
-	float scaleY = 936.0f/672.0f;
+	//float scale = static_cast<float>(RenderOpenGL::height)/static_cast<float>(RenderOpenGL::width);
 	float vertices[]={
 	//передняя грань куба =)
-	scale*-1.0f, scaleY*-1.0f, 0.0f,//A
+	-1.0f, -1.0f, 0.0f,//A
 		 0.0f, 0.0f,
-	scale*1.0f, scaleY*-1.0f,  0.0f,//B
+	1.0f, -1.0f,  0.0f,//B
 		 1.0f, 0.0f,
-	scale*1.0f, scaleY*1.0f,   0.0f,//D
+	1.0f, 1.0f,   0.0f,//D
 		 1.0f, 1.0f,
-	scale*1.0f, scaleY*1.0f,   0.0f,//D
+	1.0f, 1.0f,   0.0f,//D
 		 1.0f, 1.0f,
-	scale*-1.0f, scaleY*1.0f,  0.0f,//C
+	-1.0f, 1.0f,  0.0f,//C
 		 0.0f, 1.0f,
-	scale*-1.0f, scaleY*-1.0f, 0.0f,//A
+	-1.0f, -1.0f, 0.0f,//A
 		 0.0f, 0.0f
 	};
 

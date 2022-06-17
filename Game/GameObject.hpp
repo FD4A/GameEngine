@@ -9,9 +9,12 @@ struct GameObject
 	int id=0;
 	int posHor=0;
 	int posVer=0;
+	float scale =1.0;
 	textureID textureId=0;
 	int speedH = 0;
 	int speedV = 0;
+	int targetposH = 0;
+	int targetposV = 0;
 	shaderID shaderId=0;
 
 	GameObject() = delete;
@@ -25,12 +28,22 @@ struct GameObject
 	void setShaderId(shaderID& id)
 		{shaderId = id;}
 
-	GameObject(int posHor, int posVer, textureID tid, int hspeed, int vspeed) noexcept: id(GameObject::gid), posHor(posHor), posVer(posVer), textureId{tid},
-			speedH(hspeed), speedV(vspeed)
+	GameObject(int posHor_, int posVer_, float scale_, textureID tid_, int hspeed_, int vspeed_) noexcept:
+			id(GameObject::gid),
+			posHor(posHor_), posVer(posVer_),
+			scale{scale_},
+			textureId{tid_},
+			speedH(hspeed_), speedV(vspeed_),
+			targetposH(posHor_), targetposV(posVer_)
 		{gid++;}//пока не думаем о переполнении
 
-	GameObject(GameObject&& moveobj) noexcept: id(moveobj.id),  posHor(moveobj.posHor),  posVer(moveobj.posVer) ,  textureId(moveobj.textureId),
-			speedH(moveobj.speedH), speedV(moveobj.speedV)
+	GameObject(GameObject&& moveobj) noexcept:
+			id(moveobj.id),
+			posHor(moveobj.posHor),  posVer(moveobj.posVer),
+			scale{moveobj.scale},
+			textureId(moveobj.textureId),
+			speedH(moveobj.speedH), speedV(moveobj.speedV),
+			targetposH(moveobj.posHor), targetposV(moveobj.posVer)
 		{moveobj.id = 0;}
 
 	void update(int limL, int limR, int limT, int limB);
