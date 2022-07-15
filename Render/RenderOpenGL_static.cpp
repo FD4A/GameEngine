@@ -4,12 +4,6 @@
 #include "../Debug.h"
 #include "RenderOpenGL.hpp"
 
-int RenderOpenGL::height=768;
-int RenderOpenGL::width=1024;
-GameInterface* RenderOpenGL::game=nullptr;
-double RenderOpenGL::xpos =0;
-double RenderOpenGL::ypos =0;
-
 void RenderOpenGL::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 	switch(key)

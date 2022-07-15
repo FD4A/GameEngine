@@ -14,7 +14,7 @@ struct TextureManager
 {
 private:
 	std::unordered_map<std::string,textureID> storage;
-	static RenderInterface* render;
+	static inline RenderInterface* render = nullptr;
 	textureID loadImageCreateTexture(std::string texturePathName);
 public:
 	void init(RenderInterface* newRender);

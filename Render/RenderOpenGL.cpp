@@ -109,7 +109,6 @@ void RenderOpenGL::initShaderSquare()
 {
 	square.init("./Render/ShadersOpenGL/source/pole2.vs","./Render/ShadersOpenGL/source/pole2.fs");
 	//перенести в другое место чтобы была возможность масштабирования экрана? + у каждого объекта должен быть scale
-	//float scale = static_cast<float>(RenderOpenGL::height)/static_cast<float>(RenderOpenGL::width);
 	float vertices[]={
 	//передняя грань куба =)
 	-1.0f, -1.0f, 0.0f,//A

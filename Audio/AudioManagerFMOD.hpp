@@ -18,7 +18,7 @@ typedef struct
 
 struct AudioManagerFMOD: public AudioManagerInterface
 {
-	static GameInterface* game;
+	static inline GameInterface* game = nullptr;
 	FMOD::System *asystem=nullptr;
 	std::array<sound_t,1> sounds;
 

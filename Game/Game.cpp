@@ -1,7 +1,5 @@
 #include "Game.hpp"
 
-RenderInterface* Game::render = nullptr;
-
 void Game::initRender(RenderInterface* newRender)
 	{render = newRender;}
 
@@ -26,10 +24,12 @@ void Game::update()
 void Game::draw()
 {
 	DEBUG_SHORT(scene,print("Scene::",__FUNCTION__,'\n');)
+	//render->draw(map);
 	for(GameObject& obj: objects)
 	{
 		render->draw(obj);
 	}
+
 }
 
 void Game::clear()

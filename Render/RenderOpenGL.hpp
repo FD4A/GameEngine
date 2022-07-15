@@ -11,15 +11,15 @@
 struct RenderOpenGL: public RenderInterface
 {
 private:
-	static int height;
-	static int width;
+	static inline int height = 1024;
+	static inline int width = 768;
 	GLFWwindow *window=nullptr;
 	char title[9]="GameName";
 	Shader square;
 	void initShaderSquare();
-	static GameInterface* game;
-	static double xpos;
-	static double ypos;
+	static inline GameInterface* game = nullptr;
+	static inline double xpos = 0.0;
+	static inline double ypos = 0.0;
 public:
 	static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 	static void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);

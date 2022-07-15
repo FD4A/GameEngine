@@ -9,7 +9,7 @@ template <typename Head, typename... Tail>
 void print(const Head& head, const Tail&... tail)
 {
 	//тут бы для не строк, а переменных сделать имя=значение
-	std::cout << head;
+	std::cout << head << ' ';
 	if constexpr ( sizeof...(tail)>0 )
 		{print(tail...);}
 	else
@@ -29,6 +29,7 @@ void print(const Head& head, const Tail&... tail)
 		bool shader = false;
 		bool audio = false;
 		bool gameobject = false;
+		bool game_setClick = false;
 	};
 	extern Debug_t Debug;
 

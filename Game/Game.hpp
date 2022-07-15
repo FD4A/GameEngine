@@ -8,10 +8,12 @@
 #include "../Render/RenderInterface.hpp"
 #include "../Game/GameObject.hpp"
 
+#include "Map/Map.hpp"
+
 struct Game: public GameInterface
 {
 private:
-	static RenderInterface* render;
+	static inline RenderInterface* render = nullptr;
 	std::vector<GameObject> objects;
 	bool click = false;
 public:
@@ -36,8 +38,10 @@ public:
 		click=true;
 		cposx = xpos;
 		cposy = ypos;
-		objects[0].targetposH = xpos;
-		objects[0].targetposV = ypos;
+		objects[0].targetposH = xpos;//map.title_pix_size*(xpos/map.title_pix_size);
+		objects[0].targetposV = ypos;//map.title_pix_size*(ypos/map.title_pix_size);
+
+		//DEBUG_SHORT(game_setClick,print("tileHor=",xpos/map.title_pix_size," tileVer=",ypos/map.title_pix_size);)
 	}
 	bool isClick() override
 		{return click;}

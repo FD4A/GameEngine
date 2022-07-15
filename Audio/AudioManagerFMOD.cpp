@@ -2,8 +2,6 @@
 #include "AudioManagerFMOD.hpp"
 #include "../Game/Game.hpp"
 
-GameInterface* AudioManagerFMOD::game=nullptr;
-
 AudioManagerFMOD::AudioManagerFMOD()
 {
 

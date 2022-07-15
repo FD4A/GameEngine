@@ -1,8 +1,6 @@
 #include "../Debug.h"
 #include "TextureManager.hpp"
 
-RenderInterface* TextureManager::render = nullptr;
-
 void TextureManager::init(RenderInterface* newRender)
 {
 	render = newRender;
