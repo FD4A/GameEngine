@@ -87,7 +87,6 @@ bool RenderOpenGL::frameEnd()
 void RenderOpenGL::draw(GameObject& obj)
 {
 	DEBUG_SHORT(render, print("Render::",__FUNCTION__,'\n'); )
-//	//shader ID TODO подробнее посмотреть что такое VAO VBO EBO
 	square.use();
 	glBindVertexArray(square.VAO);
 
